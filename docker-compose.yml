@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: bookshop-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: bookshop
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongodb-init:/docker-entrypoint-initdb.d
+    networks:
+      - bookshop-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bookshop-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/bookshop?authSource=admin
+      JWT_SECRET: your_super_secret_jwt_key_for_production
+      FRONTEND_URL: http://localhost:3000
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      LOG_LEVEL: info
+    ports:
+      - "5000:5000"
+      - "9090:9090"  # Prometheus metrics
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_logs:/app/logs
+    depends_on:
+      - mongodb
+      - jaeger
+    networks:
+      - bookshop-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bookshop-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:5000
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - bookshop-network
+
+  # Jaeger for OpenTelemetry
+  jaeger:
+    image: jaegertracing/all-in-one:1.50
+    container_name: bookshop-jaeger
+    restart: unless-stopped
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # Jaeger collector
+      - "4317:4317"    # OTLP gRPC receiver
+      - "4318:4318"    # OTLP HTTP receiver
+    networks:
+      - bookshop-network
+
+  # OpenTelemetry Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.88.0
+    container_name: bookshop-otel-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "8888:8888"    # Prometheus metrics
+      - "8889:8889"    # Prometheus exporter metrics
+      - "13133:13133"  # Health check
+    depends_on:
+      - jaeger
+    networks:
+      - bookshop-network
+
+volumes:
+  mongodb_data:
+  backend_uploads:
+  backend_logs:
+
+networks:
+  bookshop-network:
+    driver: bridge

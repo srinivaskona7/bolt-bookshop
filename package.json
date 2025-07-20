@@ -1,0 +1,22 @@
+{
+  "name": "bolt-bookshop",
+  "version": "1.0.0",
+  "description": "Professional bookshop application with authentication and book management",
+  "main": "server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon backend/server.js",
+    "client": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "node backend/server.js",
+    "install-all": "npm install && cd frontend && npm install"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2"
+  },
+  "devDependencies": {},
+  "keywords": ["bookshop", "authentication", "mongodb", "nodejs"],
+  "author": "Bookshop Team",
+  "license": "MIT"
+}

@@ -12,3 +12,4 @@
 {"level":"info","message":"Server running on port 5000","timestamp":"2025-07-21T06:43:51.220Z"}
 {"level":"info","message":"127.0.0.1 - - [21/Jul/2025:06:43:51 +0000] \"GET / HTTP/1.1\" 404 29 \"https://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36\"","timestamp":"2025-07-21T06:43:51.420Z"}
 {"level":"info","message":"127.0.0.1 - - [21/Jul/2025:06:43:51 +0000] \"GET / HTTP/1.1\" 404 29 \"https://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36\"","timestamp":"2025-07-21T06:43:51.450Z"}
+{"level":"info","message":"127.0.0.1 - - [21/Jul/2025:06:43:54 +0000] \"GET / HTTP/1.1\" 404 29 \"https://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36\"","timestamp":"2025-07-21T06:43:54.959Z"}
